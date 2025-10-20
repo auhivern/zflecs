@@ -3078,6 +3078,19 @@ pub fn get_pair(
     return null;
 }
 
+pub fn get_mut_pair(
+    world: *world_t,
+    subject: entity_t,
+    first: entity_t,
+    second: entity_t,
+    comptime T: type,
+) ?*T {
+    if (get_mut_id(world, subject, pair(first, second))) |ptr| {
+        return cast_mut(T, ptr);
+    }
+    return null;
+}
+
 pub fn has_pair(
     world: *world_t,
     subject: entity_t,
@@ -3150,6 +3163,13 @@ pub fn field(it: *iter_t, comptime T: type, index: i8) ?[]T {
     if (ecs_field_w_size(it, @sizeOf(T), index)) |anyptr| {
         const ptr = @as([*]T, @ptrCast(@alignCast(anyptr)));
         return ptr[0..it.count()];
+    }
+    return null;
+}
+
+pub fn field_singleton(it: *iter_t, comptime T: type, index: i8) ?*T {
+    if (ecs_field_w_size(it, @sizeOf(T), index)) |anyptr| {
+        return @as(*T, @ptrCast(@alignCast(anyptr)));
     }
     return null;
 }
